@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="page-title">3) Algoritmo y parámetros</h2>
+<div class="small">Tarea actual: <b>{{ task_type }}</b></div>
+
+<form method="post" class="card">
+
+  {% if task_type == "classification" %}
+    <div class="form-grid">
+      <div>
+        <label>Algoritmo</label>
+        <select name="algo">
+          <option>LogisticRegression</option>
+          <option>LinearSVM</option>
+          <option>SVM(RBF)</option>
+          <option>RandomForestClassifier</option>
+          <option>GradientBoostingClassifier</option>
+          <option>kNN(Classifier)</option>
+          <!-- NUEVOS -->
+          <option>GaussianNB</option>
+          <option>DecisionTreeClassifier</option>
+        </select>
+      </div>
+      <div>
+        <label>Test size</label>
+        <input type="number" name="test_size" step="0.01" value="0.2" min="0.05" max="0.95">
+      </div>
+      <div class="center">
+        <label><input type="checkbox" name="scale"> Escalar numéricas</label>
+      </div>
+    </div>
+
+    <div class="section-title mtop">Hiperparámetros</div>
+    <div class="form-grid">
+      <div><label>n_estimators</label><input type="number" name="n_estimators" value="200" min="10"></div>
+      <div><label>max_depth</label><input type="number" name="max_depth" value="0" min="0" title="0 equivale a None"></div>
+      <div><label>K (kNN)</label><input type="number" name="k" value="5" min="1"></div>
+      <div><label>C (LogReg/SVM)</label>
+  <input type="number" step="any" name="C" value="1.0" min="0">
+</div>
+      <div><label>gamma (SVM RBF)</label>
+  <input type="number" step="any" name="gamma" value="0.1" min="0">
+</div>
+
+    <div class="section-title mtop">Desbalance</div>
+    <div class="form-grid">
+      <div>
+        <label>Estrategia</label>
+        <select name="imbalance">
+          <option>None</option>
+          <option>class_weight</option>
+          <option>SMOTE</option>
+        </select>
+      </div>
+      <div><label>SMOTE k_neighbors</label><input type="number" name="smote_k" value="5" min="1"></div>
+    </div>
+
+    <div class="section-title mtop">Validación y Métricas</div>
+    <div class="form-grid">
+      <div class="center">
+        <label><input type="checkbox" name="use_kfold"> Usar K-Fold CV</label>
+      </div>
+      <div>
+        <label>Folds</label>
+        <input type="number" name="cv_folds" value="5" min="2" max="20">
+      </div>
+      <div>
+        <label>Scoring (CV)</label>
+        <select name="cv_scoring" title="Para multiclase usa *_ovr / *_ovo">
+          <option>accuracy</option>
+          <option>f1_weighted</option>
+          <option>precision_weighted</option>
+          <option>recall_weighted</option>
+          <option>roc_auc</option>
+          <option>roc_auc_ovr</option>
+          <option>roc_auc_ovo</option>
+        </select>
+      </div>
+      <div class="center">
+        <label><input type="checkbox" name="plot_roc" checked> Intentar curva ROC/AUC</label>
+      </div>
+    </div>
+
+  {% elif task_type == "regression" %}
+    <div class="form-grid">
+      <div>
+        <label>Algoritmo</label>
+        <select name="algo">
+          <option>LinearRegression</option>
+          <option>Ridge</option>
+          <option>Lasso</option>
+          <option>RandomForestRegressor</option>
+          <option>GradientBoostingRegressor</option>
+          <option>SVR(RBF)</option>
+          <option>kNN(Regressor)</option>
+          <!-- NUEVO -->
+          <option>DecisionTreeRegressor</option>
+        </select>
+      </div>
+      <div>
+        <label>Test size</label>
+        <input type="number" name="test_size" step="0.01" value="0.2" min="0.05" max="0.95">
+      </div>
+      <div class="center">
+        <label><input type="checkbox" name="scale"> Escalar numéricas</label>
+      </div>
+    </div>
+
+    <div class="section-title mtop">Hiperparámetros</div>
+    <div class="form-grid">
+      <div><label>n_estimators</label><input type="number" name="n_estimators" value="200" min="10"></div>
+      <div><label>max_depth</label><input type="number" name="max_depth" value="0" min="0" title="0 equivale a None"></div>
+      <div><label>K (kNN)</label><input type="number" name="k" value="5" min="1"></div>
+      <div><label>C (SVR RBF)</label><input type="number" step="0.1" name="C" value="1.0" min="0.01"></div>
+      <div><label>gamma (SVR RBF)</label><input type="number" step="0.01" name="gamma" value="0.1" min="0.0001"></div>
+    </div>
+
+    <div class="section-title mtop">Validación</div>
+    <div class="form-grid">
+      <div class="center">
+        <label><input type="checkbox" name="use_kfold"> Usar K-Fold CV</label>
+      </div>
+      <div>
+        <label>Folds</label>
+        <input type="number" name="cv_folds" value="5" min="2" max="20">
+      </div>
+      <div>
+        <label>Scoring (CV)</label>
+        <select name="cv_scoring">
+          <option>r2</option>
+          <option>neg_mean_squared_error</option>
+          <option>neg_mean_absolute_error</option>
+        </select>
+      </div>
+    </div>
+
+  {% elif task_type == "clustering" %}
+    <div class="form-grid">
+      <div>
+        <label>Algoritmo</label>
+        <select name="algo">
+          <option>KMeans</option>
+          <option>DBSCAN</option>
+          <!-- NUEVO -->
+          <option>AgglomerativeClustering</option>
+        </select>
+      </div>
+      <div><label>KMeans/Agglo: clusters (k)</label><input type="number" name="kmeans_k" value="3" min="2"></div>
+      <div><label>DBSCAN eps</label><input type="number" step="0.1" name="eps" value="0.5" min="0.05"></div>
+      <div><label>DBSCAN min_samples</label><input type="number" name="min_samples" value="5" min="1"></div>
+    </div>
+  {% endif %}
+
+  <div class="mtop">
+    <button class="btn btn-primary" type="submit">Entrenar</button>
+  </div>
+</form>
+{% endblock %}

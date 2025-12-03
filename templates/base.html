@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>{{ title or "MLMC Web" }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  </head>
+  <body>
+    <header class="appbar">
+      <div class="appbar-inner">
+        <a class="brand" href="{{ url_for('index') }}">
+          <div class="brand-badge">ML</div>
+          <h1>MLMC Web</h1>
+        </a>
+
+        <nav class="nav">
+            {% set last_task = session.get('last_model_task') %}
+            {% set dimred_disabled = last_task in ['classification','regression'] %}
+            {% set interpret_disabled = (last_task not in ['classification','regression']) %}
+
+            <a href="{{ url_for('index') }}">Inicio</a>
+            <a href="{{ url_for('data') }}">Datos</a>
+            <a href="{{ url_for('algo') }}">Algoritmo</a>
+            <a href="{{ url_for('run') }}">Ejecutar</a>
+
+            <a href="{{ url_for('dimred') }}"
+                class="{{ 'is-disabled' if dimred_disabled else '' }}"
+                aria-disabled="{{ 'true' if dimred_disabled else 'false' }}"
+                tabindex="{{ '-1' if dimred_disabled else '0' }}"
+                title="{{ 'No disponible al tener un modelo supervisado entrenado' if dimred_disabled else 'Reducción de dimensión' }}">
+                DimRed
+            </a>
+
+            <a href="{{ url_for('interpret') }}"
+                class="{{ 'is-disabled' if interpret_disabled else '' }}"
+                aria-disabled="{{ 'true' if interpret_disabled else 'false' }}"
+                tabindex="{{ '-1' if interpret_disabled else '0' }}"
+                title="{{ 'Requiere un modelo supervisado entrenado' if interpret_disabled else 'Interpretabilidad' }}">
+                Interpretar
+            </a>
+
+            <!-- Toggle tema -->
+            <div class="theme-toggle">
+                <input id="theme-switch" type="checkbox" aria-label="Cambiar tema">
+                <label class="toggle" for="theme-switch">
+                <svg class="icon-sun" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <path d="M12 4V2m0 20v-2M4 12H2m20 0h-2M5.64 5.64L4.22 4.22m15.56 15.56-1.42-1.42M5.64 18.36 4.22 19.78m15.56-15.56-1.42 1.42M12 8a4 4 0 100 8 4 4 0 000-8z"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <svg class="icon-moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" fill="currentColor"/>
+                </svg>
+                </label>
+            </div>
+        </nav>
+
+      </div>
+    </header>
+
+    <main class="container">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class="flashes">
+            {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+
+    <script>
+      (function () {
+        const root = document.documentElement;
+        const saved = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const initial = saved || (prefersDark ? 'dark' : 'light');
+        root.setAttribute('data-theme', initial);
+
+        const cb = document.getElementById('theme-switch');
+        if (cb) cb.checked = initial === 'dark';
+
+        if (cb) cb.addEventListener('change', function () {
+          const t = cb.checked ? 'dark' : 'light';
+          root.setAttribute('data-theme', t);
+          localStorage.setItem('theme', t);
+        });
+      })();
+    </script>
+  </body>
+</html>

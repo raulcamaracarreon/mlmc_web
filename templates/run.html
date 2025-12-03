@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="page-title">4) Resultados</h2>
+
+{% if metrics %}
+  <table class="table metrics">
+    <tbody>
+    {% for k,v in metrics.items() %}
+      <tr><th>{{ k }}</th><td>{{ v }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+{% if chart_b64 %}
+  <div class="chart mtop"><img src="{{ chart_b64 }}" alt="chart"></div>
+{% endif %}
+
+<div class="mtop">
+  <a class="btn btn-ghost" href="{{ url_for('download_report') }}">Descargar reporte HTML</a>
+</div>
+{% endblock %}

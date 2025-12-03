@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="page-title">Interpretabilidad</h2>
+
+{% if not last_model_ready %}
+  <div class="card">Primero ejecuta un entrenamiento en <a href="{{ url_for('algo') }}">Algoritmo</a> y vuelve aquí.</div>
+{% else %}
+<form method="post" class="card">
+  <div class="form-grid">
+    <div>
+      <label>Método</label>
+      <select name="method">
+        <option value="model" {{ 'selected' if form_method=='model' else '' }}>Model feature importance</option>
+        <option value="permutation" {{ 'selected' if form_method=='permutation' else '' }}>Permutation importance</option>
+        <option value="shap" {{ 'selected' if form_method=='shap' else '' }}>SHAP (global)</option>
+      </select>
+    </div>
+    <div><label>Top k</label><input type="number" name="topk" value="{{ form_topk or 20 }}" min="1" max="200"></div>
+    <div id="perm_params" style="display:none;">
+      <label>n_repeats</label><input type="number" name="n_repeats" value="{{ form_nrepeats or 10 }}" min="3" max="100">
+    </div>
+    <div id="perm_scoring" style="display:none;">
+      <label>scoring (opcional)</label><input type="text" name="scoring" value="{{ form_scoring or '' }}" placeholder="accuracy, f1, r2, ...">
+    </div>
+  </div>
+  <div class="mtop row">
+    <button class="btn btn-primary" type="submit">Calcular</button>
+    {% if csv_ready %}
+      <a class="btn btn-ghost" href="{{ url_for('download_importances') }}">Descargar CSV</a>
+    {% endif %}
+  </div>
+</form>
+
+{% if chart_b64 %}
+  <div class="chart mtop"><img src="{{ chart_b64 }}" alt="feature importances"></div>
+{% endif %}
+
+{% if table %}
+  <div class="card">
+    <table class="table">
+      <thead><tr><th>feature</th><th>importance</th><th>std</th><th>type</th></tr></thead>
+      <tbody>
+      {% for row in table %}
+        <tr><td>{{ row.feature }}</td><td>{{ row.importance }}</td><td>{{ row.std }}</td><td>{{ row.type }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+
+<script>
+  const sel = document.querySelector('select[name="method"]');
+  const perm = document.getElementById('perm_params');
+  const permS = document.getElementById('perm_scoring');
+  function sync(){ const p = sel.value==='permutation'; perm.style.display = permS.style.display = p ? '' : 'none'; }
+  sel.addEventListener('change', sync); sync();
+</script>
+{% endif %}
+{% endblock %}

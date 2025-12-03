@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="page-title">Dimensión Reducida</h2>
+
+{% if not cols %}
+  <div class="card">Primero ve a <a href="{{ url_for('data') }}">Datos</a>, sube un CSV y elige las columnas.</div>
+{% else %}
+<form method="post" class="card">
+  <div class="form-grid">
+    <div>
+      <label>Algoritmo</label>
+      <select name="algo" id="algo">
+        <option value="PCA" {{ 'selected' if form_algo=='PCA' else '' }}>PCA</option>
+        <option value="TSNE" {{ 'selected' if form_algo=='TSNE' else '' }}>t-SNE</option>
+        <option value="UMAP" {{ 'selected' if form_algo=='UMAP' else '' }}>UMAP</option>
+      </select>
+    </div>
+    <div class="center">
+      <label><input type="checkbox" name="scale" {{ 'checked' if form_scale else '' }}> Escalar numéricas</label>
+    </div>
+    <div>
+      <label>Colorear por (opcional)</label>
+      <select name="color_by">
+        <option value="">— Ninguno —</option>
+        {% for c in cols %}<option value="{{ c }}" {{ 'selected' if form_color_by==c else '' }}>{{ c }}</option>{% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <div id="tsne_params" class="form-grid" style="display:none;">
+    <div><label>Perplexity</label><input type="number" name="perplexity" step="1" value="{{ form_perplexity or 30 }}"></div>
+    <div><label>Learning rate</label><input type="number" name="learning_rate" step="1" value="{{ form_lr or 200 }}"></div>
+    <div><label>Iteraciones</label><input type="number" name="n_iter" step="100" value="{{ form_iter or 1000 }}"></div>
+  </div>
+
+  <div id="umap_params" class="form-grid" style="display:none;">
+    <div><label>n_neighbors</label><input type="number" name="n_neighbors" value="{{ form_neighbors or 15 }}"></div>
+    <div><label>min_dist</label><input type="number" step="0.01" name="min_dist" value="{{ form_min_dist or 0.1 }}"></div>
+  </div>
+
+  <div class="mtop"><button class="btn btn-primary" type="submit">Ejecutar</button></div>
+</form>
+
+{% if chart_b64 %}
+  <div class="chart mtop"><img src="{{ chart_b64 }}" alt="dimred"></div>
+  <div class="mtop"><a class="btn btn-ghost" href="{{ url_for('download_dimred') }}">Descargar proyección (CSV)</a></div>
+{% endif %}
+
+<script>
+  const algoSel = document.getElementById('algo');
+  const tsneDiv = document.getElementById('tsne_params');
+  const umapDiv = document.getElementById('umap_params');
+  function sync(){ const v=algoSel.value; tsneDiv.style.display = v==='TSNE' ? '' : 'none'; umapDiv.style.display = v==='UMAP' ? '' : 'none'; }
+  algoSel.addEventListener('change', sync); sync();
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="page-title">2) Datos</h2>
+
+<form method="post" enctype="multipart/form-data" class="card">
+  <div class="form-grid">
+    <div>
+      <label>Sube un CSV</label>
+      <input type="file" name="csv" accept=".csv">
+      <div class="small">El archivo se guardará en <code>uploads/</code></div>
+    </div>
+
+    {% if cols %}
+      <div>
+        <label>Selecciona features</label>
+        <select name="features" multiple size="10">
+          {% for c in cols %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+        </select>
+      </div>
+
+      {% if has_labels %}
+      <div>
+        <label>Selecciona target</label>
+        <select name="target">
+          {% for c in cols %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+        </select>
+      </div>
+      {% endif %}
+    {% endif %}
+  </div>
+
+  {% if cols %}
+    <input type="hidden" name="submitted" value="1">
+    <div class="mtop"><button class="btn btn-primary" type="submit">Guardar y continuar</button></div>
+  {% else %}
+    <div class="mtop"><button class="btn btn-primary" type="submit">Cargar</button></div>
+  {% endif %}
+</form>
+{% endblock %}

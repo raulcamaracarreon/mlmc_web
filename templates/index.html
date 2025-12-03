@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="page-title">1) Tipo de problema</h2>
+
+<form method="post" class="card">
+  <div class="section-title">¿Tu dataset tiene variable objetivo?</div>
+  <div class="row">
+    <label><input type="radio" name="labels" value="yes" required> Sí (Supervisado)</label>
+    <label><input type="radio" name="labels" value="no" required> No (No supervisado)</label>
+  </div>
+
+  <div id="superv" class="mtop">
+    <label>Si respondiste “Sí”: elige tarea</label>
+    <select name="task_type_superv">
+      <option value="classification">Clasificación</option>
+      <option value="regression">Regresión</option>
+    </select>
+  </div>
+
+  <div id="unsuperv" class="mtop" style="display:none;">
+    <label>Si respondiste “No”: elige tarea</label>
+    <select name="task_type_unsuperv">
+      <option value="clustering">Clustering</option>
+      <option value="dimred">Reducción de dimensión</option>
+    </select>
+  </div>
+
+  <div class="mtop">
+    <button class="btn btn-primary" type="submit">Continuar</button>
+  </div>
+</form>
+
+<script>
+  const radios = document.querySelectorAll('input[name="labels"]');
+  const superv = document.getElementById('superv');
+  const unsuperv = document.getElementById('unsuperv');
+  function sync() {
+    const v = document.querySelector('input[name="labels"]:checked');
+    if (!v) return;
+    const yes = v.value === 'yes';
+    superv.style.display = yes ? '' : 'none';
+    unsuperv.style.display = yes ? 'none' : '';
+  }
+  radios.forEach(r => r.addEventListener('change', sync));
+  sync();
+</script>
+{% endblock %}

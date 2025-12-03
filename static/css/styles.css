@@ -1,0 +1,186 @@
+:root{
+  --fg:#0f172a;           /* slate-900 */
+  --muted:#475569;        /* slate-600 */
+  --bg:#f8fafc;           /* slate-50 */
+  --card:#ffffff;
+  --border:#e2e8f0;       /* slate-200 */
+  --brand:#2563eb;        /* blue-600 */
+  --brand-600:#1d4ed8;
+  --accent:#10b981;       /* emerald-500 */
+  --warn-bg:#fff7ed;      /* orange-50 */
+  --warn-border:#fdba74;  /* orange-300 */
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  color:var(--fg); background:var(--bg);
+}
+
+/* Header / Nav */
+.appbar{
+  background:linear-gradient(180deg,#ffffff 0%,#f4f7fb 100%);
+  border-bottom:1px solid var(--border);
+  position:sticky; top:0; z-index:10;
+}
+.appbar-inner{
+  max-width:1100px; margin:0 auto; padding:14px 18px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.brand{
+  display:flex; align-items:center; gap:10px; text-decoration:none;
+}
+.brand-badge{
+  width:34px; height:34px; border-radius:10px; background:var(--brand);
+  display:grid; place-items:center; color:#fff; font-weight:700;
+  box-shadow:0 6px 16px rgba(37,99,235,.25);
+}
+.brand h1{margin:0; font-size:18px; color:var(--fg)}
+.nav{
+  display:flex; gap:14px; flex-wrap:wrap;
+}
+.nav a{
+  color:var(--muted); text-decoration:none; padding:6px 10px; border-radius:8px;
+}
+.nav a:hover{ background:#eef2ff; color:#1e3a8a }
+
+/* Layout */
+.container{ max-width:1100px; margin:22px auto; padding:0 18px; }
+.page-title{ margin:8px 0 14px; font-size:22px }
+
+/* Cards & sections */
+.card{
+  background:var(--card); border:1px solid var(--border); border-radius:14px;
+  padding:16px; box-shadow:0 6px 18px rgba(2,6,23,.04);
+  margin:14px 0;
+}
+.section-title{ font-size:16px; margin:0 0 10px; color:var(--muted) }
+
+/* Forms */
+.form-grid{ display:grid; gap:12px; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); }
+label{ font-size:14px; color:var(--muted) }
+input[type="text"], input[type="number"], select{
+  width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:#fff;
+  outline:none;
+}
+input[type="file"]{
+  padding:8px; border:1px dashed var(--border); border-radius:10px; background:#fff;
+}
+textarea{ width:100%; min-height:120px; border:1px solid var(--border); border-radius:10px; padding:10px 12px; }
+
+/* Buttons */
+.btn{ display:inline-block; padding:10px 14px; border-radius:12px; border:1px solid transparent; cursor:pointer; text-decoration:none; }
+.btn-primary{ background:var(--brand); color:#fff; }
+.btn-primary:hover{ background:var(--brand-600) }
+.btn-ghost{ background:#fff; color:var(--brand); border-color:var(--brand) }
+.btn-ghost:hover{ background:#f0f6ff }
+
+/* Tables */
+.table{ width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.table th, .table td{ padding:10px 12px; border-bottom:1px solid var(--border); text-align:left; }
+.table th{ background:#f1f5f9; color:#0f172a; }
+.table tr:last-child td{ border-bottom:none }
+
+/* Metrics table quick style */
+.metrics{ width:420px; max-width:100%; }
+
+/* Charts */
+.chart img{ width:100%; max-width:900px; border-radius:12px; border:1px solid var(--border); box-shadow:0 6px 18px rgba(2,6,23,.05) }
+
+/* Flash messages */
+.flashes{ list-style: none; padding:10px 14px; margin:12px 0; border:1px solid var(--warn-border); background:var(--warn-bg); border-radius:12px }
+.flashes li{ margin:4px 0 }
+
+/* Small helpers */
+.row{ display:flex; gap:12px; align-items:center; flex-wrap:wrap }
+.mtop{ margin-top:12px }
+.center{ display:flex; justify-content:flex-start; gap:10px; align-items:center }
+.small{ color:var(--muted); font-size:12px }
+
+/* ==== Toggle tema ==== */
+.theme-toggle{ display:flex; align-items:center; gap:8px; margin-left:6px }
+.theme-toggle input{ position:absolute; opacity:0; width:0; height:0 }
+.toggle{
+  --knob: 24px;
+  width:56px; height:30px; border-radius:999px;
+  background:var(--border); position:relative; padding:3px;
+  display:grid; grid-template-columns:1fr 1fr; align-items:center;
+  color:var(--muted); cursor:pointer; user-select:none;
+}
+.toggle::after{
+  content:""; position:absolute; top:3px; left:3px;
+  width:var(--knob); height:var(--knob); border-radius:999px;
+  background:var(--brand); transition:left .22s ease, background .22s ease;
+  box-shadow:0 6px 16px rgba(37,99,235,.25);
+}
+.icon-sun,.icon-moon{ justify-self:center; opacity:.55; transition:opacity .2s ease }
+#theme-switch:not(:checked) + .toggle .icon-sun{ opacity:1 }
+#theme-switch:checked + .toggle .icon-moon{ opacity:1 }
+#theme-switch:checked + .toggle::after{ left:29px }
+
+/* Transiciones suaves tema */
+body, .card, .appbar, .table, .flashes, .chart img {
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+/* ==== Tema oscuro: sobrescribe variables ==== */
+html[data-theme="dark"]{
+  --fg:#e5e7eb;            /* texto */
+  --muted:#a3aab7;
+  --bg:#0b1220;            /* fondo app */
+  --card:#0f172a;          /* paneles */
+  --border:#1f2937;        /* bordes */
+  --brand:#3b82f6;         /* azul un poco más vivo en dark */
+  --brand-600:#2563eb;
+  --warn-bg:#1f1303;       /* aviso */
+  --warn-border:#a16207;
+}
+
+/* Ajustes de componentes en dark */
+html[data-theme="dark"] .appbar{
+  background:linear-gradient(180deg,#0f172a 0%, #0c1528 100%);
+  border-bottom:1px solid var(--border);
+}
+html[data-theme="dark"] .brand-badge{ box-shadow:none }
+html[data-theme="dark"] .nav a:hover{ background:#1e293b; color:#c7d2fe }
+html[data-theme="dark"] .table th{ background:#0c1528; color:#e5e7eb }
+html[data-theme="dark"] .chart img{ border-color:#123; box-shadow:none }
+
+/* === Dark theme: tabla de métricas con ambas columnas oscuras === */
+html[data-theme="dark"] .table.metrics th,
+html[data-theme="dark"] .table.metrics td{
+  background:#0c1528;        /* igual que la cabecera */
+  color:#e5e7eb;              /* texto claro y legible */
+  border-bottom:1px solid #1f2937;
+}
+html[data-theme="dark"] .table.metrics{
+  border-color:#1f2937;
+}
+
+/* === Dark theme: input[type=file] legible === */
+html[data-theme="dark"] input[type="file"]{
+  color:#e5e7eb;              /* “Ningún archivo seleccionado” */
+  background:#0f172a;
+  border-color:#334155;
+}
+input[type="file"]::file-selector-button{
+  background:var(--brand);
+  color:#fff;
+  border:1px solid var(--brand);
+  border-radius:10px;
+  padding:8px 12px;
+  cursor:pointer;
+}
+html[data-theme="dark"] input[type="file"]::file-selector-button{
+  background:var(--brand);    /* mantiene contraste en oscuro */
+  color:#fff;
+}
+
+/* Nav: estado deshabilitado */
+.nav a.is-disabled{
+  pointer-events: none;
+  opacity: .45;
+  cursor: not-allowed;
+  filter: grayscale(.2);
+}
